@@ -1,4 +1,4 @@
-defmodule ElixirTelegram.Repo do
+defmodule ElixirTelegram.Endpoint do
   use Ecto.Repo, otp_app: :elixir_telegram
 
   @doc """
