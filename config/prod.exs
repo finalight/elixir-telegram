@@ -15,24 +15,28 @@ use Mix.Config
 # which you typically run after static files are built.
 config :elixir_telegram, ElixirTelegramWeb.Endpoint,
   load_from_system_env: true,
-  url: [host: "example.com", port: 80],
-  cache_static_manifest: "priv/static/cache_manifest.json"
+  url: [scheme: "https", host: "telegram-bot-elixir.herokuapp.com", port: 443],
+  force_ssl: [rewrite_on: [:x_forwarded_proto]],
+  cache_static_manifest: "priv/static/cache_manifest.json",
+  secret_key_base: Map.fetch!(System.get_env(), "SECRET_KEY_BASE")
 
 # Do not print debug messages in production
 config :logger, level: :info
+
+config :elixir_telegram, ElixirTelegramWeb.Endpoint,
+  adapter: Ecto.Adapters.Postgres,
+  url: System.get_env("DATABASE_URL"),
+  pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10"),
+  ssl: true
 
 # ## SSL Support
 #
 # To get SSL working, you will need to add the `https` key
 # to the previous section and set your `:url` port to 443:
 #
-#     config :elixir_telegram, ElixirTelegramWeb.Endpoint,
-#       ...
-#       url: [host: "example.com", port: 443],
-#       https: [:inet6,
-#               port: 443,
-#               keyfile: System.get_env("SOME_APP_SSL_KEY_PATH"),
-#               certfile: System.get_env("SOME_APP_SSL_CERT_PATH")]
+# config :elixir_telegram, ElixirTelegramWeb.Endpoint,
+#   url: [scheme: "https", host: "telegram-bot-elixir.herokuapp.com", port: 443],
+#   force_ssl: [rewrite_on: [:x_forwarded_proto]],
 #
 # Where those two env variables return an absolute path to
 # the key and cert in disk or a relative path inside priv,
@@ -61,4 +65,3 @@ config :logger, level: :info
 
 # Finally import the config/prod.secret.exs
 # which should be versioned separately.
-import_config "prod.secret.exs"
