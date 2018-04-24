@@ -12,7 +12,31 @@ defmodule ElixirTelegramWeb.MessageController do
   end
 
   def create(conn, params) do
-    IO.puts Poison.encode!(params)
+    # IO.puts(Poison.encode!(params))
+    IO.puts(get_in(params, ["message", "from", "id"]))
+    IO.puts("lol")
+
+    body = %{
+      chat_id: get_in(params, ["message", "from", "id"]),
+      text: get_in(params, ["message", "text"])
+    }
+
+    case HTTPoison.post(
+           "https://api.telegram.org/bot#{System.get_env("TELEGRAM_BOT_KEY")}/sendMessage",
+           Poison.encode!(body),
+           [{"Content-Type", "application/json"}]
+         ) do
+      {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
+        IO.puts("success!!")
+        IO.puts(body)
+
+      {:ok, %HTTPoison.Response{status_code: 400, body: body}} ->
+        IO.puts(body)
+
+      {:ok, %HTTPoison.Response{status_code: 404, body: body}} ->
+        IO.puts(body)
+    end
+
     render(conn, "show.json")
     # with {:ok, %Message{} = message} <- Bot.create_message(message_params) do
     #   conn

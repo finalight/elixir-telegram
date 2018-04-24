@@ -18,7 +18,7 @@ defmodule ElixirTelegram.Application do
 
     case HTTPoison.post(
            "https://api.telegram.org/bot#{System.get_env("TELEGRAM_BOT_KEY")}/setWebhook",
-           "{\"url\": \"#{System.get_env("BOT_URL")}/api/message\"}",
+           "{\"url\": \"#{System.get_env("BOT_URL")}/api/messages\"}",
            [{"Content-Type", "application/json"}]
          ) do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
